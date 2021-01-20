@@ -25,6 +25,18 @@ public abstract class SmartCard {
 
    public abstract void sendAtr(String vendorName, String issuerCn);
 
+   public static int getOsFamily() {
+      String osName = System.getProperty("os.name").toLowerCase();
+      if(osName.contains("win"))
+         return 1;
+      if(osName.contains("nux"))
+         return 2;
+      if(osName.contains("mac") || osName.contains("darwin"))
+         return 4;
+
+      return 1;
+   }
+
    public String introduceYourself() {
       byte[] atrBytes = this.card.getATR().getBytes();
       return Utils.bytes2HexString(atrBytes);
