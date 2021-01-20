@@ -22,12 +22,17 @@ public class AnyCard extends SmartCard {
    }
 
    public KeyStore loadKeyStore(char[] pin) throws IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, NoSuchProviderException {
-      Utils.logMessage("SunMSCAPI");
-      Provider provider = Security.getProvider("SunMSCAPI");
-      KeyStore store = KeyStore.getInstance("Windows-MY", provider);
-      store.load((LoadStoreParameter)null);
-      SmartCardLogic._fixAliases(store);
-      return store;
+      int osFamily = getOsFamily();
+      if(osFamily != 1) {
+         throw new KeyStoreException("Platform does not support MS CAPI keystore");
+      } else {
+         Utils.logMessage("SunMSCAPI");
+         Provider provider = Security.getProvider("SunMSCAPI");
+         KeyStore store = KeyStore.getInstance("Windows-MY", provider);
+         store.load((LoadStoreParameter) null);
+         SmartCardLogic._fixAliases(store);
+         return store;
+      }
    }
 
    public void sendAtr(String vendorName, String issuerCn) {
