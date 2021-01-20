@@ -3,7 +3,6 @@ package com.itsinbox.smartbox.logic;
 import com.itsinbox.smartbox.model.AnyCard;
 import com.itsinbox.smartbox.model.SmartCard;
 import com.itsinbox.smartbox.utils.Utils;
-import java.util.Arrays;
 import javax.smartcardio.Card;
 
 public class SmartCardFactory {
@@ -25,17 +24,12 @@ public class SmartCardFactory {
       return ret;
    }
 
-   private boolean isKnownATR(byte[] card_atr, byte[][] known_atr) {
-      byte[][] var3 = known_atr;
-      int var4 = known_atr.length;
-
-      for(int var5 = 0; var5 < var4; ++var5) {
-         byte[] eid_atr = var3[var5];
-         if (Arrays.equals(card_atr, eid_atr)) {
+   private boolean isKnownATR(String card_atr, String[] known_atr) {
+      for (String eid_atr : known_atr) {
+         if (card_atr.equals(eid_atr)) {
             return true;
          }
       }
-
       return false;
    }
 }
