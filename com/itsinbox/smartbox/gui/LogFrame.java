@@ -1,5 +1,6 @@
 package com.itsinbox.smartbox.gui;
 
+import com.itsinbox.smartbox.SmartBox;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -90,7 +91,7 @@ public class LogFrame extends JFrame {
    }
 
    private void readLog() {
-      String logPath = System.getProperty("user.home") + File.separator + "eporezi.log";
+      String logPath = System.getProperty("user.home") + File.separator + SmartBox.LOG_FILE_NAME;
 
       try {
          this.log = new String(Files.readAllBytes(Paths.get(logPath)));

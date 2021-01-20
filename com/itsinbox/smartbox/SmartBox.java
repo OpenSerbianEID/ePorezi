@@ -42,7 +42,7 @@ public class SmartBox {
 
    public static void main(String[] args) {
       setLaf();
-      ProxyUtils.init("eporezi_proxy.conf");
+      ProxyUtils.init(SmartBox.PROXY_CONFIG_FILE);
       proxyParams = ProxyUtils.readProxySettings();
       if (args != null && args.length > 0) {
          processUrl(args[0]);
@@ -83,15 +83,15 @@ public class SmartBox {
             switch(var6) {
             case 0:
                environment = SmartBox.Environment.PRODUCTION;
-               baseUrl = "https://eporezi.purs.gov.rs";
+               baseUrl = SmartBox.PRODUCTION_BASE_URL;
                break;
             case 1:
                environment = SmartBox.Environment.ETO;
-               baseUrl = "https://test.purs.gov.rs";
+               baseUrl = SmartBox.ETO_BASE_URL;
                break;
             case 2:
                environment = SmartBox.Environment.ITO;
-               baseUrl = "http://10.1.65.31";
+               baseUrl = SmartBox.ITO_BASE_URL;
                break;
             default:
                environment = SmartBox.Environment.UNKNOWN;
@@ -100,7 +100,7 @@ public class SmartBox {
          }
 
          if (environment == SmartBox.Environment.UNKNOWN) {
-            JOptionPane.showMessageDialog((Component)null, "Грешка приликом читања параметара.", "SmartBox", 0);
+            JOptionPane.showMessageDialog((Component)null, SmartBox.NOTIFICATION_ENVIRNOMENT_NOT_DETECTED, "SmartBox", 0);
             return;
          }
 

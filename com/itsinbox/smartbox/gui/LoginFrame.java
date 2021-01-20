@@ -238,17 +238,17 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
       this.productionClicked = false;
       switch(this.environment) {
       case ITO:
-         this.performLogin("http://10.1.65.31");
+         this.performLogin(SmartBox.ITO_BASE_URL);
          break;
       default:
-         this.performLogin("https://test.purs.gov.rs");
+         this.performLogin(SmartBox.ETO_BASE_URL);
       }
 
    }
 
    private void loginProductionButtonActionPerformed(ActionEvent evt) {
       this.productionClicked = true;
-      this.performLogin("https://eporezi.purs.gov.rs");
+      this.performLogin(SmartBox.PRODUCTION_BASE_URL);
    }
 
    private void postaEporeziLabelMouseClicked(MouseEvent evt) {
@@ -262,7 +262,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
 
    private void versionInfoLabelMouseClicked(MouseEvent evt) {
       try {
-         Utils.openURL("https://eporezi.purs.gov.rs/upload/eporezi/eporezi_setup_v" + this.newAppVersion + ".exe");
+         Utils.openURL(SmartBox.APP_DOWNLOAD_BASE_URL + this.newAppVersion + ".exe");
       } catch (IOException var3) {
          Utils.logMessage("Error while opening URL: " + var3.getMessage());
       }
@@ -286,7 +286,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
    }
 
    private void initVisuals() {
-      this.setTitle("еПорези 1.2.2");
+      this.setTitle(SmartBox.WINDOW_TITLE + SmartBox.VERSION);
       this.setLocationRelativeTo((Component)null);
       this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/com/itsinbox/smartbox/resources/app.png")));
       this.versionInfoLabel.setVisible(false);
@@ -298,10 +298,10 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
          TerminalFactory factory = TerminalFactory.getDefault();
          List terminals = factory.terminals().list();
          this.terminal = (CardTerminal)terminals.get(0);
-         this.certStatusLabel.setText("Картица није пронађена. Молим, убаците картицу у читач.");
+         this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CARD);
          this.disableLoginButtons();
       } catch (Exception var3) {
-         this.certStatusLabel.setText("Читач картица није пронађен.");
+         this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_READER);
          this.disableLoginButtons();
       }
 
@@ -335,16 +335,16 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
 
    private void performLogin(final String baseUrl) {
       if (this.terminal == null) {
-         this.certStatusLabel.setText("Читач картица није пронађен.");
-         JOptionPane.showMessageDialog((Component)null, "Читач картица није пронађен.", "SmartBox", 0);
+         this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_READER);
+         JOptionPane.showMessageDialog((Component)null, SmartBox.NOTIFICATION_NO_READER, "SmartBox", 0);
       } else if (this.card == null) {
-         this.certStatusLabel.setText("Картица није пронађена. Молим, убаците картицу у читач.");
-         JOptionPane.showMessageDialog((Component)null, "Картица није пронађена. Молим, убаците картицу у читач.", "SmartBox", 0);
+         this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CARD);
+         JOptionPane.showMessageDialog((Component)null, SmartBox.NOTIFICATION_NO_CARD, "SmartBox", 0);
       } else {
          if (this.productionClicked) {
-            this.certStatusLabel.setText("Приступање порталу еПорези...");
+            this.certStatusLabel.setText(SmartBox.NOTIFICATION_LOGGING_IN);
          } else {
-            this.certStatusLabel.setText("Приступање Тестном окружењу...");
+            this.certStatusLabel.setText(SmartBox.NOTIFICATION_LOGGING_IN_TEST);
          }
 
          this.disableLoginButtons();
@@ -381,7 +381,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
                      } catch (Exception var4) {
                         Utils.logMessage("Error in communication with the server while logging in: " + var4.getMessage());
                         LoginFrame.this.enableLoginButtons();
-                        LoginFrame.this.certStatusLabel.setText("Грешка у комуникацији са сервером.");
+                        LoginFrame.this.certStatusLabel.setText(SmartBox.NOTIFICATION_SERVER_ERROR);
                      }
                   } else {
                      Utils.logMessage("Error: Something wrong with the certificate!");
@@ -400,7 +400,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
       if (validAlias != null) {
          this.getCertificateInfo(validAlias);
       } else {
-         this.certStatusLabel.setText("Дошло је до грешке приликом читања сертификата. Молим, покушајте поново.");
+         this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA);
       }
 
    }
@@ -459,7 +459,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
          label83: {
             String validAlias = SmartCardLogic.findAlias(this.card.getKeyStore());
             if (validAlias == null) {
-               this.certStatusLabel.setText("Дошло је до грешке приликом читања сертификата. Молим, покушајте поново.");
+               this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA);
                return false;
             }
 
@@ -489,16 +489,16 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
                   break label83;
                }
 
-               this.certStatusLabel.setText("<html>Невалидан сертификат. Обратите се вашем<br>сертификационом телу за помоћ.</html>");
+               this.certStatusLabel.setText(SmartBox.NOTIFICATION_INVALID_CERT);
                return false;
             }
 
-            this.certStatusLabel.setText("<html>Невалидан сертификат. Обратите се вашем<br>сертификационом телу за помоћ.</html>");
+            this.certStatusLabel.setText(SmartBox.NOTIFICATION_INVALID_CERT);
             return false;
          }
       } catch (KeyStoreException var12) {
          Utils.logMessage("Error " + var12);
-         this.certStatusLabel.setText("<html>Невалидан сертификат. Обратите се вашем<br>сертификационом телу за помоћ.</html>");
+         this.certStatusLabel.setText(SmartBox.NOTIFICATION_INVALID_CERT);
          return false;
       } catch (CertificateExpiredException var13) {
          Utils.logMessage("Error " + var13);
@@ -510,7 +510,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
          return false;
       } catch (IOException var15) {
          Utils.logMessage("Error " + var15);
-         this.certStatusLabel.setText("Грешка у комуникацији са сервером.");
+         this.certStatusLabel.setText(SmartBox.NOTIFICATION_SERVER_ERROR);
          return false;
       }
 
@@ -539,19 +539,19 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
          keyStore = this.card.loadKeyStore((char[])null);
       } catch (IOException var4) {
          Utils.logMessage("Error " + var4);
-         String errorMsg = "Блокирана картица.";
+         String errorMsg = SmartBox.NOTIFICATION_CARD_BLOCKED;
          if (var4.getCause() != null && var4.getCause().getCause() != null) {
             if ("CKR_PIN_INCORRECT".equals(var4.getCause().getCause().getLocalizedMessage())) {
-               errorMsg = "Погрешан ПИН!";
+               errorMsg = SmartBox.NOTIFICATION_WRONG_PIN;
             } else if ("CKR_PIN_LOCKED".equals(var4.getCause().getCause().getLocalizedMessage())) {
-               errorMsg = "Блокирана картица.";
+               errorMsg = SmartBox.NOTIFICATION_CARD_BLOCKED;
             }
          }
 
          this.certStatusLabel.setText("<html>" + errorMsg + "</html>");
       } catch (CertificateException | KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException var5) {
          Utils.logMessage("Error " + var5);
-         this.certStatusLabel.setText("Дисфункционална картица.");
+         this.certStatusLabel.setText(SmartBox.NOTIFICATION_CARD_BROKEN);
          return null;
       }
 
@@ -561,7 +561,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
       } else {
          String alias = SmartCardLogic.findAlias(keyStore);
          if (alias == null) {
-            this.certStatusLabel.setText("Дошло је до грешке приликом читања сертификата. Молим, покушајте поново.");
+            this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA);
             return null;
          } else {
             this.card.setKeyStore(keyStore);
@@ -624,7 +624,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
       (new Thread() {
          public void run() {
             try {
-               URL url = new URL("https://eporezi.purs.gov.rs/upload/eporezi/version");
+               URL url = new URL(SmartBox.VERSION_CHECK_URL);
                InputStream in = url.openStream();
                Reader reader = new InputStreamReader(in, "UTF-8");
                Properties prop = new Properties();
@@ -632,8 +632,8 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
                reader.close();
                String newVersion = prop.getProperty("version");
                Utils.logMessage("Server version: " + newVersion);
-               Utils.logMessage("Application version: " + "1.2.2");
-               if (!newVersion.equals("1.2.2")) {
+               Utils.logMessage("Application version: " + SmartBox.VERSION);
+               if (!newVersion.equals(SmartBox.VERSION)) {
                   LoginFrame.this.newAppVersion = newVersion;
                   LoginFrame.this.versionInfoLabel.setVisible(true);
                   LoginFrame.this.pack();
@@ -649,13 +649,13 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
    public void inserted(SmartCard card) {
       this.card = card;
       this.enableLoginButtons();
-      this.certStatusLabel.setText("Читач и картица препознати.");
+      this.certStatusLabel.setText(SmartBox.NOTIFICATION_STATUS_READY);
    }
 
    public void removed() {
       this.card = null;
       this.disableLoginButtons();
-      this.certStatusLabel.setText("Картица није пронађена. Молим, убаците картицу у читач.");
+      this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CARD);
    }
 
    public void actionPerformed(ActionEvent e) {

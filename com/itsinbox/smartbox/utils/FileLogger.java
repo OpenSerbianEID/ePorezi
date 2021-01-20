@@ -1,5 +1,6 @@
 package com.itsinbox.smartbox.utils;
 
+import com.itsinbox.smartbox.SmartBox;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -12,7 +13,7 @@ public class FileLogger {
    private BufferedWriter writer;
 
    public FileLogger() {
-      this.logPath = System.getProperty("user.home") + File.separator + "eporezi.log";
+      this.logPath = System.getProperty("user.home") + File.separator + SmartBox.LOG_FILE_NAME;
 
       try {
          this.writer = new BufferedWriter(new FileWriter(this.logPath));

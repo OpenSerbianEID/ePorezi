@@ -182,7 +182,7 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
                         SignXmlFrame.this.statusLabel.setText("Грешка приликом потписивања пријаве!");
                      }
                   } catch (Exception var4) {
-                     SignXmlFrame.this.statusLabel.setText("Грешка у комуникацији са сервером.");
+                     SignXmlFrame.this.statusLabel.setText(SmartBox.NOTIFICATION_SERVER_ERROR);
                   }
                } else {
                   SignXmlFrame.this.statusLabel.setText("Грешка приликом потписивања пријаве!");
@@ -213,7 +213,7 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
    }
 
    private void initVisuals() {
-      this.setTitle("еПорези 1.2.2");
+      this.setTitle(SmartBox.WINDOW_TITLE + SmartBox.VERSION);
       this.setLocationRelativeTo((Component)null);
       this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/com/itsinbox/smartbox/resources/app.png")));
       if (this.environment == SmartBox.Environment.PRODUCTION) {
@@ -229,11 +229,11 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
          TerminalFactory factory = TerminalFactory.getDefault();
          List terminals = factory.terminals().list();
          this.terminal = (CardTerminal)terminals.get(0);
-         this.statusLabel.setText("Картица није пронађена. Молим, убаците картицу у читач.");
+         this.statusLabel.setText(SmartBox.NOTIFICATION_NO_CARD);
          this.disableSignButton();
       } catch (Exception var3) {
          Utils.logMessage("No reader! \n" + var3.toString());
-         this.statusLabel.setText("Читач картица није пронађен.");
+         this.statusLabel.setText(SmartBox.NOTIFICATION_NO_READER);
          this.disableSignButton();
       }
 
@@ -272,19 +272,19 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
          keyStore = this.card.loadKeyStore((char[])null);
       } catch (IOException var4) {
          Utils.logMessage("Error " + var4);
-         String errorMsg = "Блокирана картица.";
+         String errorMsg = SmartBox.NOTIFICATION_CARD_BLOCKED;
          if (var4.getCause() != null && var4.getCause().getCause() != null) {
             if ("CKR_PIN_INCORRECT".equals(var4.getCause().getCause().getLocalizedMessage())) {
-               errorMsg = "Погрешан ПИН!";
+               errorMsg = SmartBox.NOTIFICATION_WRONG_PIN;
             } else if ("CKR_PIN_LOCKED".equals(var4.getCause().getCause().getLocalizedMessage())) {
-               errorMsg = "Блокирана картица.";
+               errorMsg = SmartBox.NOTIFICATION_CARD_BLOCKED;
             }
          }
 
          this.statusLabel.setText("<html>" + errorMsg + "</html>");
       } catch (CertificateException | KeyStoreException | NoSuchProviderException | NoSuchAlgorithmException var5) {
          Utils.logMessage("Error " + var5);
-         this.statusLabel.setText("Дисфункционална картица.");
+         this.statusLabel.setText(SmartBox.NOTIFICATION_CARD_BROKEN);
          return null;
       }
 
@@ -294,7 +294,7 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
       } else {
          this.alias = SmartCardLogic.findAlias(keyStore);
          if (this.alias == null) {
-            this.statusLabel.setText("Дошло је до грешке приликом читања сертификата. Молим, покушајте поново.");
+            this.statusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA);
             return null;
          } else {
             this.card.setKeyStore(keyStore);
@@ -330,13 +330,13 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
 
    public void inserted(SmartCard card) {
       this.card = card;
-      this.statusLabel.setText("Читач и картица препознати.");
+      this.statusLabel.setText(SmartBox.NOTIFICATION_STATUS_READY);
       this.enableSignButton();
    }
 
    public void removed() {
       this.card = null;
-      this.statusLabel.setText("Картица није пронађена. Молим, убаците картицу у читач.");
+      this.statusLabel.setText(SmartBox.NOTIFICATION_NO_CARD);
       this.disableSignButton();
    }
 }

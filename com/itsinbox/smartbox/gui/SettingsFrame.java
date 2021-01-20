@@ -48,7 +48,7 @@ public class SettingsFrame extends JFrame {
       this.setLocationRelativeTo((Component)null);
       this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/com/itsinbox/smartbox/resources/app.png")));
       this.setDefaultCloseOperation(1);
-      this.setTitle("еПорези 1.2.2 - Подешавања");
+      this.setTitle(SmartBox.WINDOW_TITLE+SmartBox.VERSION+" - Подешавања");
       this.pack();
       this.readInitState();
    }
