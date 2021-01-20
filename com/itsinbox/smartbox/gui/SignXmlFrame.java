@@ -177,7 +177,7 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
                         SignXmlFrame.this.sendSignedXML(sl.getSignatureStr());
                         SignXmlFrame.this.statusLabel.setText("Потписана пријава је послата.");
                         SignXmlFrame.this.card.disconnect();
-                        System.exit(0);
+                        Runtime.getRuntime().exit(0);
                      } else {
                         SignXmlFrame.this.statusLabel.setText("Грешка приликом потписивања пријаве!");
                      }
@@ -198,7 +198,7 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
    }
 
    private void noButtonActionPerformed(ActionEvent evt) {
-      System.exit(0);
+      Runtime.getRuntime().exit(0);
    }
 
    private void logButtonActionPerformed(ActionEvent evt) {

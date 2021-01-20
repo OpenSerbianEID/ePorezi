@@ -377,7 +377,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
                         }
 
                         LoginFrame.this.card.disconnect();
-                        System.exit(0);
+                        Runtime.getRuntime().exit(0);
                      } catch (Exception var4) {
                         Utils.logMessage("Error in communication with the server while logging in: " + var4.getMessage());
                         LoginFrame.this.enableLoginButtons();
