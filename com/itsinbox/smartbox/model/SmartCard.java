@@ -23,7 +23,7 @@ public abstract class SmartCard {
 
    public abstract String getVendorName();
 
-   public abstract void sendAtr(String var1, String var2);
+   public abstract void sendAtr(String vendorName, String issuerCn);
 
    public String introduceYourself() {
       byte[] atrBytes = this.card.getATR().getBytes();
