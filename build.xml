@@ -1,0 +1,29 @@
+<project name="ePorezi">
+
+    <taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" />
+
+    <target name="jar" description="Create one big jarfile.">
+        <jar jarfile="out/ant/ePorezi.jar" basedir="out/production/ePorezi">
+             <manifest>
+                <attribute name="Main-Class" value="com.itsinbox.smartbox.SmartBox" />
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="bundle" depends="jar" description="Create App Bundle">
+        <jarbundler dir="out"
+                    name="ePorezi"
+                    mainclass="com.itsinbox.smartbox.SmartBox"
+                    jar="out/ant/ePorezi.jar"
+                    jvmversion="1.8"
+                    bundleid="com.itsinbox.smartbox.SmartBox"
+                    stubfile="resources/universalJavaApplicationStub"
+                    icon="resources/icon.icns"
+                    useJavaXKey="true"
+                    vmoptions="-Dsun.security.smartcardio.library=/usr/local/lib/libnstpkcs11.dylib"
+                    version="1.2.2"
+                    build="2"
+                    >
+        </jarbundler>
+    </target>
+</project>
