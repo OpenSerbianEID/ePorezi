@@ -1,7 +1,3 @@
 Manifest-Version: 1.0
-Ant-Version: Apache Ant 1.10.4
-Created-By: 11.0.3+7-LTS (Amazon.com Inc.)
-Class-Path: 
-X-COMMENT: Main-Class will be added automatically by build
 Main-Class: com.itsinbox.smartbox.SmartBox
 
