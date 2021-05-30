@@ -20,10 +20,13 @@
                     stubfile="resources/universalJavaApplicationStub"
                     icon="resources/icon.icns"
                     useJavaXKey="true"
-                    vmoptions="-Dsun.security.smartcardio.library=/usr/local/lib/libnstpkcs11.dylib"
+                    vmoptions="-Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libnstpkcs11.dylib"
                     version="1.2.2"
-                    build="2"
+                    build="3"
                     >
+            <resourcefilelist id="resources" dir="resources">
+                <file name="libnstpkcs11.dylib"/>
+            </resourcefilelist>
         </jarbundler>
     </target>
 </project>
