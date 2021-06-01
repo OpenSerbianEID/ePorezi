@@ -1,5 +1,12 @@
 package com.itsinbox.smartbox.model;
 
+import com.itsinbox.smartbox.SmartBox;
+import com.itsinbox.smartbox.utils.Utils;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PKCS11CardEdge extends PKCS11Card {
 
     public static final String[] KNOWN_ATRS = new String[]{
@@ -19,7 +26,17 @@ public class PKCS11CardEdge extends PKCS11Card {
             case 2:
                 return this.searchModulePaths(new String[]{"/usr/lib/libnstpkcs11.so"});
             case 4:
-                return this.searchModulePaths(new String[]{"/usr/local/lib/libnstpkcs11.dylib"});
+                ArrayList<String> paths = new ArrayList<>();
+                RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+                List<String> arguments = runtimeMxBean.getInputArguments();
+                for (String argument : arguments) {
+                    if(argument.contains("libnstpkcs11.dylib"))
+                    {
+                        paths.add(argument.substring(argument.indexOf('/')));
+                    }
+                }
+                paths.add("/usr/local/lib/libnstpkcs11.dylib");
+                return this.searchModulePaths(paths.toArray(new String[0]));
             default:
                 return null;
         }

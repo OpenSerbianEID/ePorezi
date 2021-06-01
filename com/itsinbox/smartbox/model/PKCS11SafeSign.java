@@ -1,5 +1,10 @@
 package com.itsinbox.smartbox.model;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PKCS11SafeSign extends PKCS11Card {
 
     public static final String[] KNOWN_ATRS = new String[]{
@@ -18,11 +23,19 @@ public class PKCS11SafeSign extends PKCS11Card {
             case 2:
                 return this.searchModulePaths(new String[]{"/usr/lib/libaetpkss.so.3"});
             case 4:
-                return this.searchModulePaths(new String[]{
-                        "/Applications/tokenadmin.app/Contents/Frameworks/libaetpkss.dylib",
-                        "/usr/local/lib/libaetpkss.dylib",
-                        "/usr/lib/libaetpkss.dylib"
-                });
+                ArrayList<String> paths = new ArrayList<>();
+                RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+                List<String> arguments = runtimeMxBean.getInputArguments();
+                for (String argument : arguments) {
+                    if(argument.contains("libaetpkss.dylib"))
+                    {
+                        paths.add(argument.substring(argument.indexOf('/')));
+                    }
+                }
+                paths.add("/Applications/tokenadmin.app/Contents/Frameworks/libaetpkss.dylib");
+                paths.add("/usr/local/lib/libaetpkss.dylib");
+                paths.add("/usr/lib/libaetpkss.dylib");
+                return this.searchModulePaths(paths.toArray(new String[0]));
             default:
                 return null;
         }
