@@ -280,7 +280,8 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
    public static void init(final SmartBox.Environment environment, final String loginKey) {
       EventQueue.invokeLater(new Runnable() {
          public void run() {
-            (new LoginFrame(environment, loginKey)).setVisible(true);
+            SmartBox.loginFrame = new LoginFrame(environment, loginKey);
+            SmartBox.loginFrame.setVisible(true);
          }
       });
    }

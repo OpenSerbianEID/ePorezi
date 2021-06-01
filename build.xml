@@ -20,13 +20,30 @@
                     stubfile="resources/universalJavaApplicationStub"
                     icon="resources/icon.icns"
                     useJavaXKey="true"
-                    vmoptions="-Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libnstpkcs11.dylib"
+                    vmoptions="-Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libnstpkcs11.dylib -Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libaetpkss.dylib"
                     version="1.2.2"
-                    build="3"
+                    build="4"
                     >
             <resourcefilelist id="resources" dir="resources">
                 <file name="libnstpkcs11.dylib"/>
+                <file name="libaetpkss.dylib"/>
             </resourcefilelist>
         </jarbundler>
     </target>
+
+    <target name="link" description="To be manually appended to info.plist">
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>ePorezi</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>eporezi</string>
+            </array>
+        </dict>
+    </array>
+    </target>
 </project>
+
+

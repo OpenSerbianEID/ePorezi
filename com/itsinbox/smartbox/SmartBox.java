@@ -1,6 +1,7 @@
 package com.itsinbox.smartbox;
 
 import com.itsinbox.smartbox.gui.LoginFrame;
+import com.itsinbox.smartbox.gui.SettingsFrame;
 import com.itsinbox.smartbox.gui.SignXmlFrame;
 import com.itsinbox.smartbox.proxy.ProxyParams;
 import com.itsinbox.smartbox.proxy.ProxyUtils;
@@ -9,9 +10,69 @@ import java.awt.Component;
 import java.net.URLDecoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Arrays;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.LoggingPermission;
+
+interface OpenUriAppleEventHandler {
+   public void handleURI(URI uri);
+}
+
+class OpenURIEventInvocationHandler implements InvocationHandler {
+
+   private OpenUriAppleEventHandler urlHandler;
+
+   public OpenURIEventInvocationHandler(OpenUriAppleEventHandler urlHandler) {
+      this.urlHandler = urlHandler;
+   }
+
+   @SuppressWarnings({ "rawtypes", "unchecked"})
+   public Object invoke(Object proxy, Method method, Object[] args) {
+      if (method.getName().equals("openURI")) {
+         try {
+            Class openURIEventClass = Class.forName("com.apple.eawt.AppEvent$OpenURIEvent");
+            Method getURLMethod = openURIEventClass.getMethod("getURI");
+            //arg[0] should be an instance of OpenURIEvent
+            URI uri =  (URI)getURLMethod.invoke(args[0]);
+            urlHandler.handleURI(uri);
+         } catch (Exception ex) {
+            ex.printStackTrace();
+         }
+      }
+      return null;
+   }
+}
+
+class OSXAppleEventHelper {
+   /**
+    * Call only on OS X
+    */
+   @SuppressWarnings({ "unchecked", "rawtypes" })
+   public static void setOpenURIAppleEventHandler(OpenUriAppleEventHandler urlHandler) {
+      try {
+         Class applicationClass = Class.forName("com.apple.eawt.Application");
+         Method getApplicationMethod = applicationClass.getDeclaredMethod("getApplication", (Class[])null);
+         Object application = getApplicationMethod.invoke(null, (Object[])null);
+
+         Class openURIHandlerClass = Class.forName("com.apple.eawt.OpenURIHandler", false, applicationClass.getClassLoader());
+         Method setOpenURIHandlerMethod = applicationClass.getMethod("setOpenURIHandler", openURIHandlerClass);
+
+         OpenURIEventInvocationHandler handler = new OpenURIEventInvocationHandler(urlHandler);
+         Object openURIEvent = Proxy.newProxyInstance(openURIHandlerClass.getClassLoader(), new Class[] { openURIHandlerClass }, handler);
+         setOpenURIHandlerMethod.invoke(application, openURIEvent);
+      } catch (Exception ex) {
+         ex.printStackTrace();
+      }
+   }
+}
 
 public class SmartBox {
    public static final String VERSION = "1.2.2";
@@ -36,24 +97,32 @@ public class SmartBox {
    public static final String NOTIFICATION_PIN_VALID = "ПИН исправан! Учитавање...";
    public static final String NOTIFICATION_INVALID_CERT = "<html>Невалидан сертификат. Обратите се вашем<br>сертификационом телу за помоћ.</html>";
    public static final String WINDOW_TITLE = "еПорези ";
+   public static LoginFrame loginFrame;
    private static SmartBox.Environment environment;
    private static String baseUrl;
    private static ProxyParams proxyParams;
+
 
    public static void main(String[] args) {
       setLaf();
       ProxyUtils.init(SmartBox.PROXY_CONFIG_FILE);
       proxyParams = ProxyUtils.readProxySettings();
-      if (args != null && args.length > 0) {
-         processUrl(args[0]);
-      } else {
-         showLogin((String)null);
-      }
 
+
+      OSXAppleEventHelper.setOpenURIAppleEventHandler(new OpenUriAppleEventHandler() {
+         @Override
+         public void handleURI(URI url) {
+            loginFrame.dispose();
+            processUrl(url.toString());
+         }
+      });
+
+      showLogin((String) null);
    }
 
    private static void processUrl(String uri) {
       try {
+         Utils.logMessage("processUrl: " + uri);
          uri = uri.substring(0, uri.length() - 1);
          Map params = splitQuery(uri.replace("eporezi://", ""));
          String env = (String)params.get("env");
