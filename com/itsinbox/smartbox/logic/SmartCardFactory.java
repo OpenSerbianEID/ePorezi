@@ -3,6 +3,7 @@ package com.itsinbox.smartbox.logic;
 import com.itsinbox.smartbox.model.AnyCard;
 import com.itsinbox.smartbox.model.PKCS11CardEdge;
 import com.itsinbox.smartbox.model.PKCS11SafeSign;
+import com.itsinbox.smartbox.model.PKCS11IDPrime;
 import com.itsinbox.smartbox.model.SmartCard;
 import com.itsinbox.smartbox.utils.Utils;
 import javax.smartcardio.Card;
@@ -35,6 +36,11 @@ public class SmartCardFactory {
          {
             smartCard = new PKCS11SafeSign();
             Utils.logMessage("CertBody: Posta (SafeSign PKCS11)");
+         }
+         else if(this.isKnownATR(attr, PKCS11IDPrime.KNOWN_ATRS))
+         {
+            smartCard = new PKCS11IDPrime();
+            Utils.logMessage("CertBody: ESS QCA (IDPrime PKCS11)");
          }
       }
       if(smartCard != null) {

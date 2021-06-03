@@ -20,13 +20,14 @@
                     stubfile="resources/universalJavaApplicationStub"
                     icon="resources/icon.icns"
                     useJavaXKey="true"
-                    vmoptions="-Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libnstpkcs11.dylib -Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libaetpkss.dylib"
+                    vmoptions="-Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libnstpkcs11.dylib -Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libaetpkss.dylib -Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libidprimepkcs11.0.dylib"
                     version="1.2.2"
-                    build="4"
+                    build="5"
                     >
             <resourcefilelist id="resources" dir="resources">
                 <file name="libnstpkcs11.dylib"/>
                 <file name="libaetpkss.dylib"/>
+                <file name="libidprimepkcs11.0.dylib"/>
             </resourcefilelist>
         </jarbundler>
     </target>
