@@ -73,87 +73,21 @@ public abstract class PKCS11Card extends SmartCard {
                 String moduleData = "name=" + moduleName + "\nlibrary=" + modulePath + "\nslotListIndex=1";
                 Utils.logMessage("Loading PKCS11 module: " + moduleData);
                 Provider provider = new SunPKCS11(new ByteArrayInputStream(moduleData.getBytes()));
-
                 Utils.logMessage("Provider information:");
                 Utils.logMessage("  Name: " + provider.getName());
                 Utils.logMessage("  Version: " + provider.getVersion());
                 Utils.logMessage("  Info: " + provider.getInfo());
-
                 CallbackHandlerProtection callbackHandlerProtection = new CallbackHandlerProtection(new PKCS11Card.PinCallbackHandler());
                 Builder builder = Builder.newInstance("PKCS11", (Provider) null, callbackHandlerProtection);
                 Security.addProvider(provider);
-
-//                Set<Provider.Service> services = provider.getServices();
-//                for (Provider.Service service : services) {
-//                    Utils.logMessage("Service: " + service.getType() + ", Algorithm: " + service.getAlgorithm());
-//                }
-
                 KeyStore keyStore = builder.getKeyStore();
-
-//                Utils.logMessage("Printing aliases:");
-//                Enumeration<String> aliases = keyStore.aliases();
-//                while (aliases.hasMoreElements()) {
-//                    String alias = aliases.nextElement();
-//                    Utils.logMessage("  Alias: " + alias);
-//                }
-
                 SmartCardLogic._fixAliases(keyStore);
                 Utils.logMessage("Number of entries in the key store: " + keyStore.size());
-
                 return keyStore;
             }
         }
     }
 
-//    public KeyStore loadKeyStore(char[] pim) throws IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, NoSuchProviderException {
-//        int osFamily = getOsFamily();
-//
-//        if(osFamily == 1) {
-//            String message = "Platform should not use PKCS11 module but MS CAPI instead";
-//            Utils.logMessage(message);
-//            throw new KeyStoreException(message);
-//        } else {
-//            String modulePath = this.getPKCS11ModulePath(osFamily);
-//            if(modulePath == null) {
-//                String message = "PKCS11 module not found!";
-//                Utils.logMessage(message);
-//                throw new KeyStoreException(message);
-//            } else {
-//                String moduleName = this.getPKCS11ModuleName();
-//                String moduleData = "name=" + moduleName + "\nlibrary=" + modulePath + "\nslotListIndex=1";
-//                Utils.logMessage("Loading PKCS11 module: " + moduleData);
-//                Provider provider = new SunPKCS11(new ByteArrayInputStream(moduleData.getBytes()));
-//
-//                Security.addProvider(provider);
-//                Builder builder = Builder.newInstance("PKCS11", null, new KeyStore.CallbackHandlerProtection(new PKCS11Card.PinCallbackHandler()));
-//
-//                Utils.logMessage("Provider information:");
-//                Utils.logMessage("  Name: " + provider.getName());
-//                Utils.logMessage("  Version: " + provider.getVersion());
-//                Utils.logMessage("  Info: " + provider.getInfo());
-//
-//                Set<Provider.Service> services = provider.getServices();
-//                for (Provider.Service service : services) {
-//                    Utils.logMessage("Service: " + service.getType() + ", Algorithm: " + service.getAlgorithm());
-//                }
-//
-//                KeyStore keyStore = builder.getKeyStore();
-//                keyStore.load(null, "369183".toCharArray());
-//
-//                Utils.logMessage("Printing aliases:");
-//                Enumeration<String> aliases = keyStore.aliases();
-//                while (aliases.hasMoreElements()) {
-//                    String alias = aliases.nextElement();
-//                    Utils.logMessage("  Alias: " + alias);
-//                }
-//
-//                SmartCardLogic._fixAliases(keyStore);
-//                Utils.logMessage("Number of entries in the key store: " + keyStore.size());
-//
-//                return keyStore;
-//            }
-//        }
-//    }
 
     public void sendAtr(String vendorName, String issuerCn) {}
 
