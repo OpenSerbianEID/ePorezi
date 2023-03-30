@@ -1,6 +1,6 @@
 <project name="ePorezi">
 
-    <taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" />
+    <taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler"  classpath="resources/jarbundler-core-3.3.0.jar" />
 
     <target name="jar" description="Create one big jarfile.">
         <jar jarfile="out/ant/ePorezi.jar" basedir="out/production/ePorezi">
@@ -28,6 +28,7 @@
                 <file name="libnstpkcs11.dylib"/>
                 <file name="libaetpkss.dylib"/>
                 <file name="libidprimepkcs11.0.dylib"/>
+                <file name="libtokenapi.dylib"/>
             </resourcefilelist>
         </jarbundler>
     </target>

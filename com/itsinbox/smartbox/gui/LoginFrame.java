@@ -401,7 +401,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
       if (validAlias != null) {
          this.getCertificateInfo(validAlias);
       } else {
-         this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA);
+         this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA + " #1");
       }
 
    }
@@ -460,7 +460,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
          label83: {
             String validAlias = SmartCardLogic.findAlias(this.card.getKeyStore());
             if (validAlias == null) {
-               this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA);
+               this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA + " #2");
                return false;
             }
 
@@ -490,16 +490,16 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
                   break label83;
                }
 
-               this.certStatusLabel.setText(SmartBox.NOTIFICATION_INVALID_CERT);
+               this.certStatusLabel.setText(SmartBox.NOTIFICATION_INVALID_CERT + "#1");
                return false;
             }
 
-            this.certStatusLabel.setText(SmartBox.NOTIFICATION_INVALID_CERT);
+            this.certStatusLabel.setText(SmartBox.NOTIFICATION_INVALID_CERT + "#2");
             return false;
          }
       } catch (KeyStoreException var12) {
          Utils.logMessage("Error " + var12);
-         this.certStatusLabel.setText(SmartBox.NOTIFICATION_INVALID_CERT);
+         this.certStatusLabel.setText(SmartBox.NOTIFICATION_INVALID_CERT + "#3");
          return false;
       } catch (CertificateExpiredException var13) {
          Utils.logMessage("Error " + var13);
@@ -561,8 +561,9 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
          return null;
       } else {
          String alias = SmartCardLogic.findAlias(keyStore);
+
          if (alias == null) {
-            this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA);
+            this.certStatusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA + " #3");
             return null;
          } else {
             this.card.setKeyStore(keyStore);

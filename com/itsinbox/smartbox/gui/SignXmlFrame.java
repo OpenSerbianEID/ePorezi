@@ -294,7 +294,7 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
       } else {
          this.alias = SmartCardLogic.findAlias(keyStore);
          if (this.alias == null) {
-            this.statusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA);
+            this.statusLabel.setText(SmartBox.NOTIFICATION_NO_CERT_DATA + " #4");
             return null;
          } else {
             this.card.setKeyStore(keyStore);
