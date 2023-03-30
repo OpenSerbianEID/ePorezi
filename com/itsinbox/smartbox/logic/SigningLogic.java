@@ -5,6 +5,7 @@ import com.itsinbox.smartbox.utils.Utils;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.security.InvalidAlgorithmParameterException;
@@ -17,10 +18,9 @@ import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.security.Signature;
+import java.security.interfaces.RSAPrivateKey;
+import java.util.*;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
@@ -203,7 +203,6 @@ public class SigningLogic {
          Utils.logMessage("Error while parsing document for signing: " + var35.getMessage());
          return false;
       }
-
       Element docroot = doc.getDocumentElement();
       Element sigsElement = (Element)docroot.getElementsByTagName("signatures").item(0);
       DOMSignContext dsc = new DOMSignContext(kp.getPrivate(), sigsElement);
@@ -303,14 +302,14 @@ public class SigningLogic {
       return text.toString();
    }
 
-   public boolean signXmlForLogin(KeyStore keyStore) throws IOException {
+   public boolean signXmlForLogin(KeyStore keyStore) throws IOException, KeyStoreException {
       SigningLogic.PrivateKeyAndCertChain privateKeyAndCertChain = this.getPrivateKeyAndCertChain(keyStore);
       X509Certificate firstInChain = privateKeyAndCertChain.mCertificate;
       if (firstInChain == null) {
          firstInChain = (X509Certificate)privateKeyAndCertChain.mCertificationChain[0];
       }
-
       KeyPair kp = new KeyPair(firstInChain.getPublicKey(), privateKeyAndCertChain.mPrivateKey);
+
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       dbf.setNamespaceAware(true);
 
@@ -391,4 +390,36 @@ public class SigningLogic {
       public Certificate[] mCertificationChain;
       public X509Certificate mCertificate;
    }
+
+   public class CustomRSAPrivateKey implements RSAPrivateKey {
+
+      private final PrivateKey privateKey;
+
+      public CustomRSAPrivateKey(PrivateKey privateKey) {
+         this.privateKey = privateKey;
+      }
+
+      // Delegate the required methods to the original private key
+      public BigInteger getPrivateExponent() {
+         return null; // As the key is non-extractable, return null for the private exponent
+      }
+
+      public String getAlgorithm() {
+         return privateKey.getAlgorithm();
+      }
+
+      public String getFormat() {
+         return privateKey.getFormat();
+      }
+
+      public byte[] getEncoded() {
+         return privateKey.getEncoded();
+      }
+
+      public BigInteger getModulus() {
+         // You may need to extract the modulus from the public key if available
+         return null;
+      }
+   }
+
 }

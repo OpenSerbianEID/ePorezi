@@ -1,10 +1,6 @@
 package com.itsinbox.smartbox.logic;
 
-import com.itsinbox.smartbox.model.AnyCard;
-import com.itsinbox.smartbox.model.PKCS11CardEdge;
-import com.itsinbox.smartbox.model.PKCS11SafeSign;
-import com.itsinbox.smartbox.model.PKCS11IDPrime;
-import com.itsinbox.smartbox.model.SmartCard;
+import com.itsinbox.smartbox.model.*;
 import com.itsinbox.smartbox.utils.Utils;
 import javax.smartcardio.Card;
 
@@ -28,6 +24,7 @@ public class SmartCardFactory {
       }
       else {
          String attr = Utils.bytes2HexString(card.getATR().getBytes());
+//         System.out.println("@@@ Got card attr: " + attr);
          if(this.isKnownATR(attr, PKCS11CardEdge.KNOWN_ATRS)) {
             smartCard = new PKCS11CardEdge();
             Utils.logMessage("CertBody: MUP/PKS (CardEdge PKCS11)");
@@ -41,6 +38,11 @@ public class SmartCardFactory {
          {
             smartCard = new PKCS11IDPrime();
             Utils.logMessage("CertBody: ESS QCA (IDPrime PKCS11)");
+         }
+         else if(this.isKnownATR(attr, PKCS11Gemalto.KNOWN_ATRS))
+         {
+            smartCard = new PKCS11Gemalto();
+            Utils.logMessage("CertBody: HALCOM (Gemalto SA)");
          }
       }
       if(smartCard != null) {

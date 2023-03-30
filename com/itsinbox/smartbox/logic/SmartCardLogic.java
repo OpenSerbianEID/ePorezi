@@ -21,13 +21,15 @@ import javax.naming.ldap.Rdn;
 public class SmartCardLogic {
    public static String findAlias(KeyStore keyStore) {
       String ret = null;
-      ArrayList aliasList = new ArrayList();
+      ArrayList<String> aliasList = new ArrayList<String>();
 
       try {
-         Enumeration aliases = keyStore.aliases();
+         Enumeration<String> aliases = keyStore.aliases();
+         Utils.logMessage("Aliases: ");
 
          while(aliases.hasMoreElements()) {
             String aliasKey = (String)aliases.nextElement();
+
             if (keyStore.isKeyEntry(aliasKey)) {
                Utils.logMessage("Alias: " + aliasKey);
                aliasList.add(aliasKey);
