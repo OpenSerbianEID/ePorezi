@@ -1,16 +1,20 @@
-<project name="ePorezi">
+<project name="ePorezi" basedir=".">
 
-    <taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" />
+    <taskdef name="jarbundler" classname="com.ultramixer.jarbundler.JarBundler" classpath="resources/jarbundler-core-3.3.0.jar" />
 
     <target name="jar" description="Create one big jarfile.">
-        <jar jarfile="out/ant/ePorezi.jar" basedir="out/production/ePorezi">
+        <jar jarfile="out/ant/ePorezi.jar" basedir="./out/production/ePorezi">
              <manifest>
                 <attribute name="Main-Class" value="com.itsinbox.smartbox.SmartBox" />
             </manifest>
         </jar>
     </target>
 
-    <target name="bundle" depends="jar" description="Create App Bundle">
+    <target name="compile">
+        <javac srcdir="." destdir="out/production/ePorezi" />
+    </target>
+
+    <target name="bundle" depends="compile,jar" description="Create App Bundle">
         <jarbundler dir="out"
                     name="ePorezi"
                     mainclass="com.itsinbox.smartbox.SmartBox"
@@ -46,5 +50,3 @@
     </array>
     </target>
 </project>
-
-
