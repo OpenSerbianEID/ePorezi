@@ -166,7 +166,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
       });
       this.jLabel10.setFont(new Font("Arial", 1, 14));
       this.jLabel10.setText("Пријавите се на");
-      this.headerButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/header.png")));
+      // this.headerButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/header.png")));
       this.headerButton.setBorder((Border)null);
       this.headerButton.setBorderPainted(false);
       this.headerButton.setContentAreaFilled(false);
@@ -187,7 +187,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
       this.dividerPanel.setLayout(dividerPanelLayout);
       dividerPanelLayout.setHorizontalGroup(dividerPanelLayout.createParallelGroup(Alignment.LEADING).addGap(0, 0, 32767));
       dividerPanelLayout.setVerticalGroup(dividerPanelLayout.createParallelGroup(Alignment.LEADING).addGap(0, 1, 32767));
-      this.logButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/log_36.png")));
+      // this.logButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/log_36.png")));
       this.logButton.setToolTipText("Лог");
       this.logButton.setBorder((Border)null);
       this.logButton.setBorderPainted(false);
@@ -201,7 +201,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
       this.jLabel4.setFont(new Font("Arial", 1, 14));
       this.jLabel4.setHorizontalAlignment(2);
       this.jLabel4.setText("<html>Пажња! Три неуспешна покушаја уноса ПИН кода блокираће вашу картицу.</html>");
-      this.proxyButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/settings.png")));
+      // this.proxyButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/settings.png")));
       this.proxyButton.setToolTipText("Подешавања");
       this.proxyButton.setBorder((Border)null);
       this.proxyButton.setBorderPainted(false);
@@ -289,7 +289,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
    private void initVisuals() {
       this.setTitle(SmartBox.WINDOW_TITLE + SmartBox.VERSION);
       this.setLocationRelativeTo((Component)null);
-      this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/com/itsinbox/smartbox/resources/app.png")));
+      // this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/com/itsinbox/smartbox/resources/app.png")));
       this.versionInfoLabel.setVisible(false);
       this.pack();
    }
@@ -612,7 +612,7 @@ public class LoginFrame extends JFrame implements SmartCardReader.ReaderListener
    }
 
    private void startLoadingAnimation() {
-      this.loadingAnimation.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/loading.gif")));
+      // this.loadingAnimation.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/loading.gif")));
       this.pack();
    }
 
