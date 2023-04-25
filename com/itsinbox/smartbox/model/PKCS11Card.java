@@ -3,7 +3,9 @@ package com.itsinbox.smartbox.model;
 import com.itsinbox.smartbox.logic.SmartCardLogic;
 import com.itsinbox.smartbox.model.SmartCard;
 import com.itsinbox.smartbox.utils.Utils;
-import java.awt.Component;
+import sun.security.pkcs11.SunPKCS11;
+
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +18,8 @@ import java.security.Security;
 import java.security.KeyStore.Builder;
 import java.security.KeyStore.CallbackHandlerProtection;
 import java.security.cert.CertificateException;
+import java.util.Enumeration;
+import java.util.Set;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
@@ -66,18 +70,24 @@ public abstract class PKCS11Card extends SmartCard {
                 throw new KeyStoreException(message);
             } else {
                 String moduleName = this.getPKCS11ModuleName();
-                String moduleData = "name=" + moduleName + "\nlibrary=" + modulePath;
+                String moduleData = "name=" + moduleName + "\nlibrary=" + modulePath + "\nslotListIndex=1";
                 Utils.logMessage("Loading PKCS11 module: " + moduleData);
-                Provider provider = new sun.security.pkcs11.SunPKCS11(new ByteArrayInputStream(moduleData.getBytes()));
-                Security.addProvider(provider);
+                Provider provider = new SunPKCS11(new ByteArrayInputStream(moduleData.getBytes()));
+                Utils.logMessage("Provider information:");
+                Utils.logMessage("  Name: " + provider.getName());
+                Utils.logMessage("  Version: " + provider.getVersion());
+                Utils.logMessage("  Info: " + provider.getInfo());
                 CallbackHandlerProtection callbackHandlerProtection = new CallbackHandlerProtection(new PKCS11Card.PinCallbackHandler());
-                Builder builder = Builder.newInstance("PKCS11", (Provider)null, callbackHandlerProtection);
+                Builder builder = Builder.newInstance("PKCS11", (Provider) null, callbackHandlerProtection);
+                Security.addProvider(provider);
                 KeyStore keyStore = builder.getKeyStore();
                 SmartCardLogic._fixAliases(keyStore);
+                Utils.logMessage("Number of entries in the key store: " + keyStore.size());
                 return keyStore;
             }
         }
     }
+
 
     public void sendAtr(String vendorName, String issuerCn) {}
 
