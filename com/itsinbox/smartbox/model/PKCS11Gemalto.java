@@ -38,4 +38,7 @@ public class PKCS11Gemalto extends PKCS11Card {
         }
     }
 
+    protected String getPKCS11SlotIndex() {
+        return "1";
+    }
 }

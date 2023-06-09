@@ -54,6 +54,10 @@ public abstract class PKCS11Card extends SmartCard {
     protected abstract String getPKCS11ModuleName();
 
     protected abstract String getPKCS11ModulePath(int osFamily);
+    
+    protected String getPKCS11SlotIndex() {
+        return null;
+    }
 
     public KeyStore loadKeyStore(char[] pim) throws IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, NoSuchProviderException {
         int osFamily = getOsFamily();
@@ -70,7 +74,11 @@ public abstract class PKCS11Card extends SmartCard {
                 throw new KeyStoreException(message);
             } else {
                 String moduleName = this.getPKCS11ModuleName();
-                String moduleData = "name=" + moduleName + "\nlibrary=" + modulePath + "\nslotListIndex=1";
+                String moduleData = "name=" + moduleName + "\nlibrary=" + modulePath;
+                String slotIndex = this.getPKCS11SlotIndex();
+                if (slotIndex != null) {
+                    moduleData = moduleData + "\nslotListIndex=" + slotIndex;
+                }
                 Utils.logMessage("Loading PKCS11 module: " + moduleData);
                 Provider provider = new SunPKCS11(new ByteArrayInputStream(moduleData.getBytes()));
                 Utils.logMessage("Provider information:");
