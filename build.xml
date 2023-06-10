@@ -27,7 +27,7 @@
                     useJavaXKey="true"
                     vmoptions="-Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libnstpkcs11.dylib -Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libaetpkss.dylib -Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libidprimepkcs11.0.dylib -Dsun.security.smartcardio.library=$APP_PACKAGE/Contents/Resources/libtokenapi.dylib"
                     version="1.2.2"
-                    build="6"
+                    build="7"
                     >
             <resourcefilelist id="resources" dir="resources">
                 <file name="libnstpkcs11.dylib"/>
