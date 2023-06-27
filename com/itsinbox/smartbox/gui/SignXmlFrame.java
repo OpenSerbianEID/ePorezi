@@ -102,7 +102,7 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
             SignXmlFrame.this.yesButtonActionPerformed(evt);
          }
       });
-      this.headerButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/headerTest.png")));
+      // this.headerButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/headerTest.png")));
       this.headerButton.setBorder((Border)null);
       this.headerButton.setBorderPainted(false);
       this.headerButton.setContentAreaFilled(false);
@@ -136,7 +136,7 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
             SignXmlFrame.this.noButtonActionPerformed(evt);
          }
       });
-      this.logButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/log_36.png")));
+      // this.logButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/log_36.png")));
       this.logButton.setBorder((Border)null);
       this.logButton.setBorderPainted(false);
       this.logButton.setContentAreaFilled(false);
@@ -215,11 +215,11 @@ public class SignXmlFrame extends JFrame implements SmartCardReader.ReaderListen
    private void initVisuals() {
       this.setTitle(SmartBox.WINDOW_TITLE + SmartBox.VERSION);
       this.setLocationRelativeTo((Component)null);
-      this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/com/itsinbox/smartbox/resources/app.png")));
+      // this.setIconImage(Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("/com/itsinbox/smartbox/resources/app.png")));
       if (this.environment == SmartBox.Environment.PRODUCTION) {
-         this.headerButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/header.png")));
+         // this.headerButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/header.png")));
       } else {
-         this.headerButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/headerTest.png")));
+         // this.headerButton.setIcon(new ImageIcon(this.getClass().getResource("/com/itsinbox/smartbox/resources/headerTest.png")));
       }
 
    }
