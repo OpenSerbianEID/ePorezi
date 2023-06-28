@@ -1,0 +1,31 @@
+name: Java CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+      
+      - name: Compile with Ant
+        run: ant compile
+
+      - name: Bundle with Ant
+        run: ant bundle
+
+      - name: Patch Info.plist
+        run: python3 .github/scripts/patch_info_plist.py
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: out-dir
+          path: out/**
