@@ -9,6 +9,10 @@ import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -31,6 +35,7 @@ public abstract class PKCS11Card extends SmartCard {
 
     private static final String KEYSTORE_TYPE = "PKCS11";
     private static final String KEYSTORE_PROVIDER = "SunPKCS11";
+    private static final String SUN_PKCS11_CLASSNAME = "sun.security.pkcs11.SunPKCS11";
 
     public String getVendorName() {
         return "";
@@ -59,7 +64,7 @@ public abstract class PKCS11Card extends SmartCard {
         return null;
     }
 
-    public KeyStore loadKeyStore(char[] pim) throws IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, NoSuchProviderException {
+    public KeyStore loadKeyStore(char[] pim) throws KeyStoreException {
         int osFamily = getOsFamily();
 
         if(osFamily == 1) {
@@ -80,13 +85,32 @@ public abstract class PKCS11Card extends SmartCard {
                     moduleData = moduleData + "\nslotListIndex=" + slotIndex;
                 }
                 Utils.logMessage("Loading PKCS11 module: " + moduleData);
-                Provider provider = new SunPKCS11(new ByteArrayInputStream(moduleData.getBytes()));
+                Provider provider;
+                try {
+                    int javaVersion = getJavaVersion();
+                    if (javaVersion <= 8) {
+                        Class<?> sunPkcs11ProviderClass = Class.forName(SUN_PKCS11_CLASSNAME);
+                        Constructor<?> constructor = sunPkcs11ProviderClass.getConstructor(InputStream.class);
+                        provider = (Provider) constructor.newInstance(new ByteArrayInputStream(moduleData.getBytes()));
+                    }
+                    else {
+                        Provider prototype = Security.getProvider(KEYSTORE_PROVIDER);
+                        Class<?> sunPkcs11ProviderClass = Class.forName(SUN_PKCS11_CLASSNAME);
+                        Method configureMethod = sunPkcs11ProviderClass.getMethod("configure", String.class);
+                        String inlineConfigPrefix = "--";
+                        provider = (Provider) configureMethod.invoke(prototype, inlineConfigPrefix + moduleData);
+                    }
+                }
+                catch (ReflectiveOperationException roe) {
+                    Utils.logMessage("Error " + roe);
+                    return null;
+                }
                 Utils.logMessage("Provider information:");
                 Utils.logMessage("  Name: " + provider.getName());
                 Utils.logMessage("  Version: " + provider.getVersion());
                 Utils.logMessage("  Info: " + provider.getInfo());
                 CallbackHandlerProtection callbackHandlerProtection = new CallbackHandlerProtection(new PKCS11Card.PinCallbackHandler());
-                Builder builder = Builder.newInstance("PKCS11", (Provider) null, callbackHandlerProtection);
+                Builder builder = Builder.newInstance(KEYSTORE_TYPE, null, callbackHandlerProtection);
                 Security.addProvider(provider);
                 KeyStore keyStore = builder.getKeyStore();
                 SmartCardLogic._fixAliases(keyStore);
@@ -100,11 +124,11 @@ public abstract class PKCS11Card extends SmartCard {
     public void sendAtr(String vendorName, String issuerCn) {}
 
     public String getKeyStoreProvider() {
-        return "SunPKCS11";
+        return KEYSTORE_PROVIDER;
     }
 
     public String getKeyStoreType() {
-        return "PKCS11";
+        return KEYSTORE_TYPE;
     }
 
     private static class PinCallbackHandler implements CallbackHandler {
@@ -128,5 +152,18 @@ public abstract class PKCS11Card extends SmartCard {
             }
         }
 
+    }
+
+    private int getJavaVersion() {
+        String[] versionElements = System.getProperty("java.version").split("\\.");
+        int discard = Integer.parseInt(versionElements[0]);
+        int version;
+        if (discard == 1) {
+            version = Integer.parseInt(versionElements[1]);
+        }
+        else {
+            version = discard;
+        }
+        return version;
     }
 }
