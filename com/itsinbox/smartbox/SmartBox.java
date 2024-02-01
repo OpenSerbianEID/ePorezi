@@ -3,6 +3,7 @@ package com.itsinbox.smartbox;
 import com.itsinbox.smartbox.gui.LoginFrame;
 import com.itsinbox.smartbox.gui.SettingsFrame;
 import com.itsinbox.smartbox.gui.SignXmlFrame;
+import com.itsinbox.smartbox.model.SmartCard;
 import com.itsinbox.smartbox.proxy.ProxyParams;
 import com.itsinbox.smartbox.proxy.ProxyUtils;
 import com.itsinbox.smartbox.utils.Utils;
@@ -104,18 +105,21 @@ public class SmartBox {
 
 
    public static void main(String[] args) {
+      Utils.logMessage("Java version: " + System.getProperty("java.version"));
       setLaf();
       ProxyUtils.init(SmartBox.PROXY_CONFIG_FILE);
       proxyParams = ProxyUtils.readProxySettings();
 
-
-      OSXAppleEventHelper.setOpenURIAppleEventHandler(new OpenUriAppleEventHandler() {
-         @Override
-         public void handleURI(URI url) {
-            loginFrame.dispose();
-            processUrl(url.toString());
-         }
-      });
+      int osFamily = SmartCard.getOsFamily();
+      if (osFamily == 4) {
+         OSXAppleEventHelper.setOpenURIAppleEventHandler(new OpenUriAppleEventHandler() {
+            @Override
+            public void handleURI(URI url) {
+               loginFrame.dispose();
+               processUrl(url.toString());
+            }
+         });
+      }
 
       showLogin((String) null);
    }
